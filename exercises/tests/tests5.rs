@@ -27,12 +27,18 @@
 /// # Safety
 ///
 /// The `address` must contain a mutable reference to a valid `u32` value.
-unsafe fn modify_by_address(address: usize) {
+unsafe fn modify_by_address(mut address: usize) {
     // TODO: Fill your safety notice of the code block below to match your
     // code's behavior and the contract of this function. You may use the
     // comment of the test below as your format reference.
     unsafe {
-        todo!("Your code goes here")
+        let &mut a = address;
+        *a=123;
+        println!("{}",&address);
+        println!("{}",address);
+        let address =0xAABBCCDD as u32;
+        println!("{address}");
+        println!("{}",&address)
     }
 }
 
@@ -43,9 +49,12 @@ mod tests {
     #[test]
     fn test_success() {
         let mut t: u32 = 0x12345678;
+        println!("{t}");
         // SAFETY: The address is guaranteed to be valid and contains
         // a unique reference to a `u32` local variable.
         unsafe { modify_by_address(&mut t as *mut u32 as usize) };
+        println!("{}",t);
+        println!("{}",&t);
         assert!(t == 0xAABBCCDD);
     }
 }
