@@ -56,7 +56,14 @@ where
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
+        let r =(ref &self.root).unwrap();
+        if value==r.value{
         true
+        }else if value<r.value{
+            r.left.unwrap().search(value)
+        }else{
+            r.right.unwrap().search(value)
+        }
     }
 }
 
@@ -67,6 +74,10 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+    }
+    fn search(&mut self, value: T)->bool {
+        //TODO
+        true
     }
 }
 
