@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -20,6 +19,7 @@ impl<T> Heap<T>
 where
     T: Default,
 {
+    
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
@@ -36,8 +36,37 @@ where
         self.len() == 0
     }
 
+    fn down(&mut self, mut i: usize){
+        let mut ind = self.left_child_idx(i);
+        while ind<self.count{
+            if ind+1<self.count && (self.comparator)(&self.items[ind+1],&self.items[ind]){
+                ind+=1
+            }
+            if (self.comparator)(&self.items[ind],&self.items[i]){
+                self.items.swap(i,ind);
+                i=ind;
+                ind=self.left_child_idx(i);
+            }else{
+                break;
+            }
+        }
+    }
+    fn up(&mut self, mut i: usize){
+        let mut ind = self.parent_idx(i);
+        while i>1{
+            if (self.comparator)(&self.items[i],&self.items[ind]){
+                self.items.swap(i,ind);
+                i=ind;
+                ind=self.parent_idx(i);
+            }else{
+                break;
+            }
+        }
+    }
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count+=1;
+        self.up(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,8 +87,17 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+		let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        if right > self.count {
+            left
+        } else if (self.comparator)(&self.items[left], &self.items[right]) {
+            left
+        } else {
+            right
+        }
     }
+    
 }
 
 impl<T> Heap<T>
@@ -85,7 +123,14 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.len() == 0 { 
+            return None; 
+        }
+
+        self.items.swap(1,self.count);
+        self.count-=1;
+        self.down(1);
+        self.items.pop()
     }
 }
 
@@ -148,7 +193,10 @@ mod tests {
         assert_eq!(heap.next(), Some(11));
         assert_eq!(heap.next(), Some(9));
         assert_eq!(heap.next(), Some(4));
+        println!("heapsize:{}",heap.items.len());
+        println!("heapsize:{}",heap.len());
         heap.add(1);
+        println!("heapsize:{}",heap.len());
         assert_eq!(heap.next(), Some(2));
     }
 }
